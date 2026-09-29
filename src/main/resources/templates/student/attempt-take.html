@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Attempt Quiz</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="topbar">
+    <div th:text="${start.quizTitle}">Quiz</div>
+    <div id="timer" style="font-size:18px; font-weight:bold;">--:--</div>
+</div>
+
+<div class="page">
+
+    <form id="quizForm" method="post"
+          th:action="@{/student/attempts/{id}/submit(id=${start.attemptId})}">
+
+        <input type="hidden" id="autoSubmitFlag" name="autoSubmit" value="false">
+
+        <div class="card" th:each="q, iter : ${start.questions}">
+            <p><b th:text="'Q' + ${iter.count} + '. ' + ${q.questionText}"></b>
+                <span style="color:#777; font-size:13px;" th:text="'(' + ${q.marks} + ' marks)'"></span></p>
+
+            <div class="form-group">
+                <label>
+                    <input type="radio" th:name="'answer_' + ${q.id}" value="A"> A) <span th:text="${q.optionA}"></span>
+                </label><br>
+                <label>
+                    <input type="radio" th:name="'answer_' + ${q.id}" value="B"> B) <span th:text="${q.optionB}"></span>
+                </label><br>
+                <label>
+                    <input type="radio" th:name="'answer_' + ${q.id}" value="C"> C) <span th:text="${q.optionC}"></span>
+                </label><br>
+                <label>
+                    <input type="radio" th:name="'answer_' + ${q.id}" value="D"> D) <span th:text="${q.optionD}"></span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn">Submit Quiz</button>
+    </form>
+
+</div>
+
+<script th:inline="javascript">
+    const timeLimitMinutes = /*[[${start.timeLimit}]]*/ 30;
+    const startTime = /*[[${#temporals.format(start.startTime, 'yyyy-MM-dd''T''HH:mm:ss')}]]*/ '2026-01-01T00:00:00';
+
+    const deadline = new Date(startTime).getTime() + timeLimitMinutes * 60 * 1000;
+    const timerEl = document.getElementById('timer');
+    let autoSubmitted = false;
+
+    function tick() {
+        const remaining = deadline - Date.now();
+
+        if (remaining <= 0) {
+            timerEl.textContent = "00:00";
+            if (!autoSubmitted) {
+                autoSubmitted = true;
+                document.getElementById('autoSubmitFlag').value = 'true';
+                document.getElementById('quizForm').submit();
+            }
+            return;
+        }
+
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        timerEl.textContent =
+            String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+    }
+
+    tick();
+    setInterval(tick, 1000);
+
+    document.getElementById('quizForm').addEventListener('submit', function () {
+        document.getElementById('submitBtn').disabled = true;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="topbar" th:fragment="navbar(title)">
+    <div th:text="${title}">QuizWiz</div>
+    <div>
+        <span th:text="${#authentication.principal.name}">User</span>
+        <form method="post" th:action="@{/api/auth/logout}">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

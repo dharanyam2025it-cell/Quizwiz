@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('Faculty Dashboard')}"></div>
+
+<div class="page">
+
+    <div class="card">
+        <h2>Create New Quiz</h2>
+
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+
+        <form method="post" th:action="@{/faculty/quizzes}">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Time Limit (minutes)</label>
+                <input type="number" name="timeLimit" min="1" required>
+            </div>
+            <button type="submit">Create Quiz</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>My Quizzes</h2>
+
+        <table th:if="${!quizzes.isEmpty()}">
+            <tr>
+                <th>Title</th>
+                <th>Time Limit</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+            <tr th:each="quiz : ${quizzes}">
+                <td th:text="${quiz.title}"></td>
+                <td th:text="${quiz.timeLimit} + ' min'"></td>
+                <td th:text="${#temporals.format(quiz.createdAt, 'dd-MMM-yyyy HH:mm')}"></td>
+                <td>
+                    <a class="btn" th:href="@{/faculty/quizzes/{id}/questions(id=${quiz.id})}">Questions</a>
+                    <a class="btn" th:href="@{/faculty/quizzes/{id}/report(id=${quiz.id})}">Report</a>
+                </td>
+            </tr>
+        </table>
+
+        <p th:if="${quizzes.isEmpty()}">No quizzes yet. Create one above.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

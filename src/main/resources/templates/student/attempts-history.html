@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Results</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('My Results')}"></div>
+
+<div class="page">
+
+    <a class="btn" th:href="@{/student/dashboard}">&larr; Back to Dashboard</a>
+
+    <div class="card">
+        <h2>My Quiz Attempts</h2>
+
+        <table th:if="${!attempts.isEmpty()}">
+            <tr>
+                <th>Quiz</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="a : ${attempts}">
+                <td th:text="${a.quizTitle}"></td>
+                <td th:text="${a.score} + ' / ' + ${a.totalMarks}"></td>
+                <td th:text="${a.status}"></td>
+                <td th:text="${a.submitTime != null ? #temporals.format(a.submitTime, 'dd-MMM-yyyy HH:mm') : '-'}"></td>
+                <td>
+                    <a class="btn" th:href="@{/student/attempts/{id}/result(id=${a.attemptId})}">View</a>
+                </td>
+            </tr>
+        </table>
+
+        <p th:if="${attempts.isEmpty()}">You haven't attempted any quiz yet.</p>
+    </div>
+
+</div>
+
+</body>
+</html>

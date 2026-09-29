@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Report</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('Class Report')}"></div>
+
+<div class="page">
+
+    <a class="btn" th:href="@{/faculty/dashboard}">&larr; Back to Dashboard</a>
+
+    <div class="card">
+        <h2 th:text="'Report: ' + ${quiz.title}"></h2>
+
+        <div class="error" th:if="${error}" th:text="${error}"></div>
+
+        <form method="get" th:action="@{/faculty/quizzes/{id}/report(id=${quiz.id})}">
+            <div class="form-group">
+                <label>Class Name</label>
+                <input type="text" name="className" th:value="${className}"
+                       placeholder="e.g. IT-2A" required>
+            </div>
+            <button type="submit">View Report</button>
+        </form>
+    </div>
+
+    <div class="card" th:if="${report != null}">
+
+        <h2 th:text="${report.className}"></h2>
+
+        <p><b>Total students:</b> <span th:text="${report.totalStudents}"></span></p>
+        <p><b>Submitted:</b> <span th:text="${report.submittedCount}"></span></p>
+        <p><b>Average score:</b> <span th:text="${report.averageScore}"></span></p>
+        <p><b>Highest score:</b> <span th:text="${report.highestScore}"></span></p>
+        <p><b>Lowest score:</b> <span th:text="${report.lowestScore}"></span></p>
+
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Score</th>
+                <th>Total Marks</th>
+                <th>Percentage</th>
+                <th>Status</th>
+            </tr>
+            <tr th:each="row : ${report.students}">
+                <td th:text="${row.studentName}"></td>
+                <td th:text="${row.score != null ? row.score : '-'}"></td>
+                <td th:text="${row.totalMarks != null ? row.totalMarks : '-'}"></td>
+                <td th:text="${row.percentage != null ? row.percentage + '%' : '-'}"></td>
+                <td th:text="${row.status}"></td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

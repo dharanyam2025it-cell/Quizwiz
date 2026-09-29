@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Result</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('Quiz Result')}"></div>
+
+<div class="page">
+
+    <a class="btn" th:href="@{/student/dashboard}">&larr; Back to Dashboard</a>
+
+    <div class="card">
+        <h2 th:text="${review.result.quizTitle}"></h2>
+
+        <p><b>Score:</b>
+            <span th:text="${review.result.score} + ' / ' + ${review.result.totalMarks}"></span></p>
+        <p><b>Status:</b> <span th:text="${review.result.status}"></span></p>
+        <p><b>Submitted at:</b>
+            <span th:text="${#temporals.format(review.result.submitTime, 'dd-MMM-yyyy HH:mm')}"></span></p>
+    </div>
+
+    <div class="card">
+        <h2>Answer Review</h2>
+
+        <div th:each="a, iter : ${review.answers}" class="card"
+             th:style="${a.correct} ? 'border-left:4px solid #1e7e45;' : 'border-left:4px solid #b23b3b;'">
+
+            <p><b th:text="'Q' + ${iter.count} + '. ' + ${a.questionText}"></b></p>
+
+            <p>Your answer:
+                <span th:text="${a.selectedOption != null ? a.selectedOption : 'Not answered'}"></span></p>
+            <p>Correct answer: <span th:text="${a.correctOption}"></span></p>
+            <p>Marks: <span th:text="${a.marksAwarded} + ' / ' + ${a.marks}"></span></p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar('Student Dashboard')}"></div>
+
+<div class="page">
+
+    <a class="btn" th:href="@{/student/attempts}">My Results</a>
+
+    <div class="card">
+        <h2>Available Quizzes</h2>
+
+        <table th:if="${!availableQuizzes.isEmpty()}">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Time Limit</th>
+                <th>Faculty</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="quiz : ${availableQuizzes}">
+                <td th:text="${quiz.title}"></td>
+                <td th:text="${quiz.description}"></td>
+                <td th:text="${quiz.timeLimit} + ' min'"></td>
+                <td th:text="${quiz.facultyName}"></td>
+                <td>
+                    <form method="post" th:action="@{/student/quizzes/{id}/start(id=${quiz.id})}">
+                        <button type="submit">Start Quiz</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+        <p th:if="${availableQuizzes.isEmpty()}">No new quizzes available right now.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
